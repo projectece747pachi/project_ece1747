@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <data xmlns="http://www.netbeans.org/ns/make-project-private/1">
+        <activeConfTypeElem>2</activeConfTypeElem>
+        <activeConfIndexElem>0</activeConfIndexElem>
+    </data>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/C:/Users/Tim/Downloads/Pachi/Pachi_1/uct/internal.h</file>
+            <file>file:/C:/Users/Tim/Downloads/Pachi/Pachi_1/stats.h</file>
+            <file>file:/C:/Users/Tim/Downloads/Pachi/Pachi_1/uct/uct.c</file>
+            <file>file:/C:/Users/Tim/Downloads/Pachi/Pachi_1/README</file>
+            <file>file:/C:/Users/Tim/Downloads/Pachi/Pachi_1/uct/tree.h</file>
+            <file>file:/C:/Users/Tim/Downloads/Pachi/Pachi_1/uct/search.c</file>
+            <file>file:/C:/Users/Tim/Downloads/Pachi/Pachi_1/move.h</file>
+            <file>file:/C:/Users/Tim/Downloads/Pachi/Pachi_1/uct/slave.c</file>
+            <file>file:/C:/Users/Tim/Downloads/Pachi/Pachi_1/Makefile</file>
+            <file>file:/C:/Users/Tim/Downloads/Pachi/Pachi_1/uct/walk.h</file>
+            <file>file:/C:/Users/Tim/Downloads/Pachi/Pachi_1/uct/tree.c</file>
+            <file>file:/C:/Users/Tim/Downloads/Pachi/Pachi_1/uct/walk.c</file>
+            <file>file:/C:/Users/Tim/Downloads/Pachi/Pachi_1/playout.c</file>
+            <file>file:/C:/Users/Tim/Downloads/Pachi/Pachi_1/pachi.c</file>
+            <file>file:/C:/Users/Tim/Downloads/Pachi/Pachi_1/board.c</file>
+            <file>file:/C:/Users/Tim/Downloads/Pachi/Pachi_1/montecarlo/montecarlo.c</file>
+            <file>file:/C:/Users/Tim/Downloads/Pachi/Pachi_1/playout.h</file>
+            <file>file:/C:/Users/Tim/Downloads/Pachi/Pachi_1/stone.h</file>
+            <file>file:/C:/Users/Tim/Downloads/Pachi/Pachi_1/timeinfo.h</file>
+        </group>
+    </open-files>
+</project-private>

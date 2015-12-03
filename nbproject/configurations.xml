@@ -1,0 +1,1527 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="97">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="Pachi_1" displayName="Pachi_1" projectFiles="true">
+      <logicalFolder name="distributed" displayName="distributed" projectFiles="true">
+        <itemPath>distributed/Makefile</itemPath>
+        <itemPath>distributed/distributed.c</itemPath>
+        <itemPath>distributed/distributed.h</itemPath>
+        <itemPath>distributed/merge.c</itemPath>
+        <itemPath>distributed/merge.h</itemPath>
+        <itemPath>distributed/protocol.c</itemPath>
+        <itemPath>distributed/protocol.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="joseki" displayName="joseki" projectFiles="true">
+        <itemPath>joseki/Makefile</itemPath>
+        <itemPath>joseki/README</itemPath>
+        <itemPath>joseki/base.c</itemPath>
+        <itemPath>joseki/base.h</itemPath>
+        <itemPath>joseki/joseki.c</itemPath>
+        <itemPath>joseki/joseki.h</itemPath>
+        <itemPath>joseki/sgfvar2gtp.pl</itemPath>
+      </logicalFolder>
+      <logicalFolder name="media" displayName="media" projectFiles="true">
+        <itemPath>media/pachi-small.png</itemPath>
+        <itemPath>media/pachi.jpg</itemPath>
+      </logicalFolder>
+      <logicalFolder name="montecarlo" displayName="montecarlo" projectFiles="true">
+        <itemPath>montecarlo/Makefile</itemPath>
+        <itemPath>montecarlo/internal.h</itemPath>
+        <itemPath>montecarlo/montecarlo.c</itemPath>
+        <itemPath>montecarlo/montecarlo.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="patternplay" displayName="patternplay" projectFiles="true">
+        <itemPath>patternplay/Makefile</itemPath>
+        <itemPath>patternplay/patternplay.c</itemPath>
+        <itemPath>patternplay/patternplay.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="patternscan" displayName="patternscan" projectFiles="true">
+        <itemPath>patternscan/Makefile</itemPath>
+        <itemPath>patternscan/patternscan.c</itemPath>
+        <itemPath>patternscan/patternscan.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="playout" displayName="playout" projectFiles="true">
+        <itemPath>playout/Makefile</itemPath>
+        <itemPath>playout/light.c</itemPath>
+        <itemPath>playout/light.h</itemPath>
+        <itemPath>playout/moggy.c</itemPath>
+        <itemPath>playout/moggy.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="random" displayName="random" projectFiles="true">
+        <itemPath>random/Makefile</itemPath>
+        <itemPath>random/random.c</itemPath>
+        <itemPath>random/random.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="replay" displayName="replay" projectFiles="true">
+        <itemPath>replay/Makefile</itemPath>
+        <itemPath>replay/replay.c</itemPath>
+        <itemPath>replay/replay.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="t-play" displayName="t-play" projectFiles="true">
+        <logicalFolder name="autotest" displayName="autotest" projectFiles="true">
+          <itemPath>t-play/autotest/README</itemPath>
+          <itemPath>t-play/autotest/TODO</itemPath>
+          <itemPath>t-play/autotest/autotest-client</itemPath>
+          <itemPath>t-play/autotest/autotest-clients</itemPath>
+          <itemPath>t-play/autotest/autotest-gather</itemPath>
+          <itemPath>t-play/autotest/autotest-lib</itemPath>
+          <itemPath>t-play/autotest/autotest-prune</itemPath>
+          <itemPath>t-play/autotest/autotest-show</itemPath>
+          <itemPath>t-play/autotest/autotest-worker</itemPath>
+          <itemPath>t-play/autotest/rc</itemPath>
+        </logicalFolder>
+        <itemPath>t-play/TESTS</itemPath>
+        <itemPath>t-play/resum</itemPath>
+        <itemPath>t-play/test_in_context.sh</itemPath>
+      </logicalFolder>
+      <logicalFolder name="t-regress" displayName="t-regress" projectFiles="true">
+        <logicalFolder name="by-falseeye" displayName="by-falseeye" projectFiles="true">
+          <itemPath>t-regress/by-falseeye/2011-06-05-Zen19-pachi2.sgf</itemPath>
+          <itemPath>t-regress/by-falseeye/2011-06-05-tazaki-pachi30s.sgf</itemPath>
+          <itemPath>t-regress/by-falseeye/2011-06-09-botkiller2-pachi30s.sgf</itemPath>
+          <itemPath>t-regress/by-falseeye/2011-06-10-pachi30s-samba-2.sgf</itemPath>
+          <itemPath>t-regress/by-falseeye/2011-06-18-dorabon-pachi2-4.sgf</itemPath>
+          <itemPath>t-regress/by-falseeye/2011-07-28-pachi2-Novicer.sgf</itemPath>
+          <itemPath>t-regress/by-falseeye/2011-08-12-xiaosugi-pachi2.sgf</itemPath>
+        </logicalFolder>
+        <logicalFolder name="by-ko" displayName="by-ko" projectFiles="true">
+          <itemPath>t-regress/by-ko/2011-06-09-jinen-pachi30s-2.sgf</itemPath>
+        </logicalFolder>
+        <logicalFolder name="by-ladder" displayName="by-ladder" projectFiles="true">
+          <itemPath>t-regress/by-ladder/2011-01-11-llopl-pachi2.sgf</itemPath>
+          <itemPath>t-regress/by-ladder/2011-06-06-tyzef-pachi30s.sgf</itemPath>
+          <itemPath>t-regress/by-ladder/2011-06-13-pachi30s-Jep.sgf</itemPath>
+          <itemPath>t-regress/by-ladder/2011-07-28-pachi2-pkunzip-2.sgf</itemPath>
+          <itemPath>t-regress/by-ladder/2011-08-08-Dallas-pachi2-2.sgf</itemPath>
+          <itemPath>t-regress/by-ladder/2011-08-09-pachi2-BlueSpark.sgf</itemPath>
+          <itemPath>t-regress/by-ladder/2011-08-09-somrak-pachi2-2.sgf</itemPath>
+          <itemPath>t-regress/by-ladder/2011-08-24-StoneGrid-pachi2.sgf</itemPath>
+          <itemPath>t-regress/by-ladder/2011-09-04-pachi2-stv.sgf</itemPath>
+          <itemPath>t-regress/by-ladder/2012-03-16-IMC-pachi2.sgf</itemPath>
+        </logicalFolder>
+        <logicalFolder name="by-semeai" displayName="by-semeai" projectFiles="true">
+          <itemPath>t-regress/by-semeai/2011-01-15-pachi2-rollingon.sgf</itemPath>
+          <itemPath>t-regress/by-semeai/2011-06-05-Zen19-pachi2.sgf</itemPath>
+          <itemPath>t-regress/by-semeai/2011-06-05-tazaki-pachi30s.sgf</itemPath>
+          <itemPath>t-regress/by-semeai/2011-06-18-dorabon-pachi2-4.sgf</itemPath>
+          <itemPath>t-regress/by-semeai/2012-03-15-pachi2-Leech.sgf</itemPath>
+        </logicalFolder>
+        <logicalFolder name="games" displayName="games" projectFiles="true">
+          <itemPath>t-regress/games/2010-12-05-pachi-CzechBot.sgf</itemPath>
+          <itemPath>t-regress/games/2011-01-11-llopl-pachi2.sgf</itemPath>
+          <itemPath>t-regress/games/2011-01-15-pachi2-rollingon.sgf</itemPath>
+          <itemPath>t-regress/games/2011-06-05-Zen19-pachi2.sgf</itemPath>
+          <itemPath>t-regress/games/2011-06-05-tazaki-pachi30s.sgf</itemPath>
+          <itemPath>t-regress/games/2011-06-06-tyzef-pachi30s.sgf</itemPath>
+          <itemPath>t-regress/games/2011-06-07-fidibus-pachi30s.sgf</itemPath>
+          <itemPath>t-regress/games/2011-06-09-botkiller2-pachi30s.sgf</itemPath>
+          <itemPath>t-regress/games/2011-06-09-jinen-pachi30s-2.sgf</itemPath>
+          <itemPath>t-regress/games/2011-06-10-pachi30s-samba-2.sgf</itemPath>
+          <itemPath>t-regress/games/2011-06-13-pachi30s-Jep.sgf</itemPath>
+          <itemPath>t-regress/games/2011-06-18-dorabon-pachi2-4.sgf</itemPath>
+          <itemPath>t-regress/games/2011-07-28-pachi2-Novicer.sgf</itemPath>
+          <itemPath>t-regress/games/2011-07-28-pachi2-pkunzip-2.sgf</itemPath>
+          <itemPath>t-regress/games/2011-08-08-Dallas-pachi2-2.sgf</itemPath>
+          <itemPath>t-regress/games/2011-08-09-pachi2-BlueSpark.sgf</itemPath>
+          <itemPath>t-regress/games/2011-08-09-somrak-pachi2-2.sgf</itemPath>
+          <itemPath>t-regress/games/2011-08-12-xiaosugi-pachi2.sgf</itemPath>
+          <itemPath>t-regress/games/2011-08-24-StoneGrid-pachi2.sgf</itemPath>
+          <itemPath>t-regress/games/2011-09-04-pachi2-stv.sgf</itemPath>
+          <itemPath>t-regress/games/2012-01-17-pachi2-Soromon-3.sgf</itemPath>
+          <itemPath>t-regress/games/2012-03-15-pachi2-Leech.sgf</itemPath>
+          <itemPath>t-regress/games/2012-03-16-IMC-pachi2.sgf</itemPath>
+          <itemPath>t-regress/games/2012-03-21-pachi2-Hujisawa-3.sgf</itemPath>
+        </logicalFolder>
+        <itemPath>t-regress/README</itemPath>
+        <itemPath>t-regress/TODO</itemPath>
+        <itemPath>t-regress/test-game.sh</itemPath>
+      </logicalFolder>
+      <logicalFolder name="t-unit" displayName="t-unit" projectFiles="true">
+        <itemPath>t-unit/Makefile</itemPath>
+        <itemPath>t-unit/README</itemPath>
+        <itemPath>t-unit/sar.t</itemPath>
+        <itemPath>t-unit/test.c</itemPath>
+        <itemPath>t-unit/test.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="tactics" displayName="tactics" projectFiles="true">
+        <itemPath>tactics/1lib.c</itemPath>
+        <itemPath>tactics/1lib.h</itemPath>
+        <itemPath>tactics/2lib.c</itemPath>
+        <itemPath>tactics/2lib.h</itemPath>
+        <itemPath>tactics/Makefile</itemPath>
+        <itemPath>tactics/ladder.c</itemPath>
+        <itemPath>tactics/ladder.h</itemPath>
+        <itemPath>tactics/nakade.c</itemPath>
+        <itemPath>tactics/nakade.h</itemPath>
+        <itemPath>tactics/nlib.c</itemPath>
+        <itemPath>tactics/nlib.h</itemPath>
+        <itemPath>tactics/selfatari.c</itemPath>
+        <itemPath>tactics/selfatari.h</itemPath>
+        <itemPath>tactics/util.c</itemPath>
+        <itemPath>tactics/util.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="tools" displayName="tools" projectFiles="true">
+        <logicalFolder name="autobook" displayName="autobook" projectFiles="true">
+          <itemPath>tools/autobook/README</itemPath>
+          <itemPath>tools/autobook/autobook.sh</itemPath>
+          <itemPath>tools/autobook/autobook2fbook.sh</itemPath>
+          <itemPath>tools/autobook/eval.sh</itemPath>
+          <itemPath>tools/autobook/expand.sh</itemPath>
+          <itemPath>tools/autobook/walk.sh</itemPath>
+        </logicalFolder>
+        <logicalFolder name="sgflib" displayName="sgflib" projectFiles="true">
+          <itemPath>tools/sgflib/.gitignore</itemPath>
+          <itemPath>tools/sgflib/__init__.py</itemPath>
+          <itemPath>tools/sgflib/sgflib.py</itemPath>
+          <itemPath>tools/sgflib/typelib.py</itemPath>
+        </logicalFolder>
+        <itemPath>tools/complete-tromptaylor.gtp</itemPath>
+        <itemPath>tools/complete.gtp</itemPath>
+        <itemPath>tools/genmove.gtp</itemPath>
+        <itemPath>tools/genmove19.gtp</itemPath>
+        <itemPath>tools/gentbook.sh</itemPath>
+        <itemPath>tools/kgslog2gtp.pl</itemPath>
+        <itemPath>tools/pattern3_show.pl</itemPath>
+        <itemPath>tools/pattern_bayes_gen.sh</itemPath>
+        <itemPath>tools/pattern_bayes_merge.sh</itemPath>
+        <itemPath>tools/pattern_byplayer.sh</itemPath>
+        <itemPath>tools/pattern_getdrops.pl</itemPath>
+        <itemPath>tools/pattern_spatial_gen.sh</itemPath>
+        <itemPath>tools/pattern_spatial_show.pl</itemPath>
+        <itemPath>tools/sgf-analyse.pl</itemPath>
+        <itemPath>tools/sgf-ratemove.sh</itemPath>
+        <itemPath>tools/sgf2gtp.pl</itemPath>
+        <itemPath>tools/sgf2gtp.py</itemPath>
+        <itemPath>tools/spirit.gtp</itemPath>
+        <itemPath>tools/twogtp.py</itemPath>
+      </logicalFolder>
+      <logicalFolder name="uct" displayName="uct" projectFiles="true">
+        <logicalFolder name="plugin" displayName="plugin" projectFiles="true">
+          <itemPath>uct/plugin/example.c</itemPath>
+          <itemPath>uct/plugin/wolf.c</itemPath>
+        </logicalFolder>
+        <logicalFolder name="policy" displayName="policy" projectFiles="true">
+          <itemPath>uct/policy/Makefile</itemPath>
+          <itemPath>uct/policy/generic.c</itemPath>
+          <itemPath>uct/policy/generic.h</itemPath>
+          <itemPath>uct/policy/ucb1.c</itemPath>
+          <itemPath>uct/policy/ucb1amaf.c</itemPath>
+        </logicalFolder>
+        <itemPath>uct/Makefile</itemPath>
+        <itemPath>uct/dynkomi.c</itemPath>
+        <itemPath>uct/dynkomi.h</itemPath>
+        <itemPath>uct/internal.h</itemPath>
+        <itemPath>uct/plugin.h</itemPath>
+        <itemPath>uct/plugins.c</itemPath>
+        <itemPath>uct/plugins.h</itemPath>
+        <itemPath>uct/prior.c</itemPath>
+        <itemPath>uct/prior.h</itemPath>
+        <itemPath>uct/search.c</itemPath>
+        <itemPath>uct/search.h</itemPath>
+        <itemPath>uct/slave.c</itemPath>
+        <itemPath>uct/slave.h</itemPath>
+        <itemPath>uct/tree.c</itemPath>
+        <itemPath>uct/tree.h</itemPath>
+        <itemPath>uct/uct.c</itemPath>
+        <itemPath>uct/uct.h</itemPath>
+        <itemPath>uct/walk.c</itemPath>
+        <itemPath>uct/walk.h</itemPath>
+      </logicalFolder>
+      <itemPath>.gitignore</itemPath>
+      <itemPath>ANDROID.txt</itemPath>
+      <itemPath>COPYING</itemPath>
+      <itemPath>CREDITS</itemPath>
+      <itemPath>HACKING</itemPath>
+      <itemPath>Makefile</itemPath>
+      <itemPath>README</itemPath>
+      <itemPath>TODO</itemPath>
+      <itemPath>board.c</itemPath>
+      <itemPath>board.h</itemPath>
+      <itemPath>book.dat.bad</itemPath>
+      <itemPath>book.dat.extra</itemPath>
+      <itemPath>chat.c</itemPath>
+      <itemPath>chat.h</itemPath>
+      <itemPath>debug.h</itemPath>
+      <itemPath>engine.h</itemPath>
+      <itemPath>fbook.c</itemPath>
+      <itemPath>fbook.h</itemPath>
+      <itemPath>fixp.h</itemPath>
+      <itemPath>gtp.c</itemPath>
+      <itemPath>gtp.h</itemPath>
+      <itemPath>joseki19.pdict</itemPath>
+      <itemPath>move.c</itemPath>
+      <itemPath>move.h</itemPath>
+      <itemPath>mq.h</itemPath>
+      <itemPath>network.c</itemPath>
+      <itemPath>network.h</itemPath>
+      <itemPath>ownermap.c</itemPath>
+      <itemPath>ownermap.h</itemPath>
+      <itemPath>pachi.c</itemPath>
+      <itemPath>pattern.c</itemPath>
+      <itemPath>pattern.h</itemPath>
+      <itemPath>pattern3.c</itemPath>
+      <itemPath>pattern3.h</itemPath>
+      <itemPath>patternprob.c</itemPath>
+      <itemPath>patternprob.h</itemPath>
+      <itemPath>patternsp.c</itemPath>
+      <itemPath>patternsp.h</itemPath>
+      <itemPath>playout.c</itemPath>
+      <itemPath>playout.h</itemPath>
+      <itemPath>probdist.c</itemPath>
+      <itemPath>probdist.h</itemPath>
+      <itemPath>random.c</itemPath>
+      <itemPath>random.h</itemPath>
+      <itemPath>stats.h</itemPath>
+      <itemPath>stone.c</itemPath>
+      <itemPath>stone.h</itemPath>
+      <itemPath>timeinfo.c</itemPath>
+      <itemPath>timeinfo.h</itemPath>
+      <itemPath>util.h</itemPath>
+      <itemPath>version.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="TestFiles"
+                   displayName="Test Files"
+                   projectFiles="false"
+                   kind="TEST_LOGICAL_FOLDER">
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceRootList>
+    <Elem>.</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Debug" type="2">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <linkerTool>
+          <linkerAddLib>
+            <pElem>../../../../../Program Files (x86)/GnuWin32/lib</pElem>
+          </linkerAddLib>
+          <linkerLibItems>
+            <linkerLibFileItem>../../../../../Program Files (x86)/GnuWin32/lib/libregex.dll.a</linkerLibFileItem>
+            <linkerLibLibItem>regex</linkerLibLibItem>
+            <linkerLibFileItem>../../../../../Program Files (x86)/GnuWin32/bin/regex2.dll</linkerLibFileItem>
+            <linkerLibFileItem>../../../../../Program Files (x86)/GnuWin32/lib/regex.lib</linkerLibFileItem>
+          </linkerLibItems>
+        </linkerTool>
+      </compileType>
+      <item path=".gitignore" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ANDROID.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="COPYING" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="CREDITS" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="HACKING" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Makefile" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="README" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="TODO" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="board.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="board.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="book.dat.bad" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="book.dat.extra" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="chat.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="chat.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="debug.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="distributed/Makefile" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="distributed/distributed.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="distributed/distributed.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="distributed/merge.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="distributed/merge.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="distributed/protocol.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="distributed/protocol.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="engine.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="fbook.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="fbook.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="fixp.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="gtp.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="gtp.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="joseki/Makefile" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="joseki/README" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="joseki/base.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="joseki/base.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="joseki/joseki.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="joseki/joseki.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="joseki/sgfvar2gtp.pl" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="joseki19.pdict" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="media/pachi-small.png" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="media/pachi.jpg" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="montecarlo/Makefile" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="montecarlo/internal.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="montecarlo/montecarlo.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="montecarlo/montecarlo.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="move.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="move.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="mq.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="network.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="network.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ownermap.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="ownermap.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="pachi.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="pattern.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="pattern.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="pattern3.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="pattern3.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="patternplay/Makefile" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="patternplay/patternplay.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="patternplay/patternplay.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="patternprob.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="patternprob.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="patternscan/Makefile" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="patternscan/patternscan.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="patternscan/patternscan.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="patternsp.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="patternsp.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="playout.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="playout.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="playout/Makefile" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="playout/light.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="playout/light.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="playout/moggy.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="playout/moggy.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="probdist.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="probdist.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="random.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="random.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="random/Makefile" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="random/random.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="random/random.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="replay/Makefile" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="replay/replay.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="replay/replay.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="stats.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="stone.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="stone.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-play/TESTS" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-play/autotest/README" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-play/autotest/TODO" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-play/autotest/autotest-client" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-play/autotest/autotest-clients" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-play/autotest/autotest-gather" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-play/autotest/autotest-lib" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-play/autotest/autotest-prune" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-play/autotest/autotest-show" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-play/autotest/autotest-worker" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-play/autotest/rc" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-play/resum" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-play/test_in_context.sh" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-regress/README" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-regress/TODO" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-regress/by-falseeye/2011-06-05-Zen19-pachi2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-falseeye/2011-06-05-tazaki-pachi30s.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-falseeye/2011-06-09-botkiller2-pachi30s.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-falseeye/2011-06-10-pachi30s-samba-2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-falseeye/2011-06-18-dorabon-pachi2-4.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-falseeye/2011-07-28-pachi2-Novicer.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-falseeye/2011-08-12-xiaosugi-pachi2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-ko/2011-06-09-jinen-pachi30s-2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-ladder/2011-01-11-llopl-pachi2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-ladder/2011-06-06-tyzef-pachi30s.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-ladder/2011-06-13-pachi30s-Jep.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-ladder/2011-07-28-pachi2-pkunzip-2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-ladder/2011-08-08-Dallas-pachi2-2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-ladder/2011-08-09-pachi2-BlueSpark.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-ladder/2011-08-09-somrak-pachi2-2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-ladder/2011-08-24-StoneGrid-pachi2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-ladder/2011-09-04-pachi2-stv.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-ladder/2012-03-16-IMC-pachi2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-semeai/2011-01-15-pachi2-rollingon.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-semeai/2011-06-05-Zen19-pachi2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-semeai/2011-06-05-tazaki-pachi30s.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-semeai/2011-06-18-dorabon-pachi2-4.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-semeai/2012-03-15-pachi2-Leech.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2010-12-05-pachi-CzechBot.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-01-11-llopl-pachi2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-01-15-pachi2-rollingon.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-06-05-Zen19-pachi2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-06-05-tazaki-pachi30s.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-06-06-tyzef-pachi30s.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-06-07-fidibus-pachi30s.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-06-09-botkiller2-pachi30s.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-06-09-jinen-pachi30s-2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-06-10-pachi30s-samba-2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-06-13-pachi30s-Jep.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-06-18-dorabon-pachi2-4.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-07-28-pachi2-Novicer.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-07-28-pachi2-pkunzip-2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-08-08-Dallas-pachi2-2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-08-09-pachi2-BlueSpark.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-08-09-somrak-pachi2-2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-08-12-xiaosugi-pachi2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-08-24-StoneGrid-pachi2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-09-04-pachi2-stv.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2012-01-17-pachi2-Soromon-3.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2012-03-15-pachi2-Leech.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2012-03-16-IMC-pachi2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2012-03-21-pachi2-Hujisawa-3.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/test-game.sh" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-unit/Makefile" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-unit/README" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-unit/sar.t" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-unit/test.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="t-unit/test.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tactics/1lib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="tactics/1lib.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tactics/2lib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="tactics/2lib.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tactics/Makefile" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tactics/ladder.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="tactics/ladder.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tactics/nakade.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="tactics/nakade.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tactics/nlib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="tactics/nlib.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tactics/selfatari.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="tactics/selfatari.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tactics/util.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="tactics/util.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="timeinfo.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="timeinfo.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/autobook/README" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/autobook/autobook.sh" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/autobook/autobook2fbook.sh" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/autobook/eval.sh" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/autobook/expand.sh" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/autobook/walk.sh" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/complete-tromptaylor.gtp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/complete.gtp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/genmove.gtp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/genmove19.gtp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/gentbook.sh" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/kgslog2gtp.pl" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/pattern3_show.pl" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/pattern_bayes_gen.sh" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/pattern_bayes_merge.sh" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/pattern_byplayer.sh" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/pattern_getdrops.pl" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/pattern_spatial_gen.sh" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/pattern_spatial_show.pl" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/sgf-analyse.pl" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/sgf-ratemove.sh" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/sgf2gtp.pl" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/sgf2gtp.py" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/sgflib/.gitignore" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/sgflib/__init__.py" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/sgflib/sgflib.py" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/sgflib/typelib.py" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/spirit.gtp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/twogtp.py" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="uct/Makefile" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="uct/dynkomi.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="uct/dynkomi.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="uct/internal.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="uct/plugin.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="uct/plugin/example.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="uct/plugin/wolf.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="uct/plugins.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="uct/plugins.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="uct/policy/Makefile" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="uct/policy/generic.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="uct/policy/generic.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="uct/policy/ucb1.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="uct/policy/ucb1amaf.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="uct/prior.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="uct/prior.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="uct/search.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="uct/search.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="uct/slave.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="uct/slave.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="uct/tree.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="uct/tree.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="uct/uct.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="uct/uct.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="uct/walk.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="uct/walk.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="util.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="version.h" ex="false" tool="3" flavor2="0">
+      </item>
+    </conf>
+    <conf name="Release" type="2">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>5</developmentMode>
+        </cTool>
+        <ccTool>
+          <developmentMode>5</developmentMode>
+        </ccTool>
+        <fortranCompilerTool>
+          <developmentMode>5</developmentMode>
+        </fortranCompilerTool>
+        <asmTool>
+          <developmentMode>5</developmentMode>
+        </asmTool>
+      </compileType>
+      <item path=".gitignore" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ANDROID.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="COPYING" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="CREDITS" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="HACKING" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Makefile" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="README" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="TODO" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="board.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="board.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="book.dat.bad" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="book.dat.extra" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="chat.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="chat.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="debug.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="distributed/Makefile" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="distributed/distributed.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="distributed/distributed.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="distributed/merge.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="distributed/merge.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="distributed/protocol.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="distributed/protocol.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="engine.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="fbook.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="fbook.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="fixp.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="gtp.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="gtp.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="joseki/Makefile" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="joseki/README" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="joseki/base.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="joseki/base.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="joseki/joseki.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="joseki/joseki.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="joseki/sgfvar2gtp.pl" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="joseki19.pdict" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="media/pachi-small.png" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="media/pachi.jpg" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="montecarlo/Makefile" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="montecarlo/internal.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="montecarlo/montecarlo.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="montecarlo/montecarlo.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="move.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="move.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="mq.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="network.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="network.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ownermap.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="ownermap.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="pachi.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="pattern.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="pattern.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="pattern3.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="pattern3.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="patternplay/Makefile" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="patternplay/patternplay.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="patternplay/patternplay.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="patternprob.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="patternprob.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="patternscan/Makefile" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="patternscan/patternscan.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="patternscan/patternscan.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="patternsp.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="patternsp.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="playout.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="playout.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="playout/Makefile" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="playout/light.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="playout/light.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="playout/moggy.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="playout/moggy.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="probdist.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="probdist.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="random.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="random.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="random/Makefile" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="random/random.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="random/random.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="replay/Makefile" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="replay/replay.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="replay/replay.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="stats.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="stone.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="stone.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-play/TESTS" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-play/autotest/README" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-play/autotest/TODO" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-play/autotest/autotest-client" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-play/autotest/autotest-clients" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-play/autotest/autotest-gather" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-play/autotest/autotest-lib" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-play/autotest/autotest-prune" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-play/autotest/autotest-show" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-play/autotest/autotest-worker" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-play/autotest/rc" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-play/resum" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-play/test_in_context.sh" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-regress/README" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-regress/TODO" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-regress/by-falseeye/2011-06-05-Zen19-pachi2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-falseeye/2011-06-05-tazaki-pachi30s.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-falseeye/2011-06-09-botkiller2-pachi30s.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-falseeye/2011-06-10-pachi30s-samba-2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-falseeye/2011-06-18-dorabon-pachi2-4.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-falseeye/2011-07-28-pachi2-Novicer.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-falseeye/2011-08-12-xiaosugi-pachi2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-ko/2011-06-09-jinen-pachi30s-2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-ladder/2011-01-11-llopl-pachi2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-ladder/2011-06-06-tyzef-pachi30s.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-ladder/2011-06-13-pachi30s-Jep.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-ladder/2011-07-28-pachi2-pkunzip-2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-ladder/2011-08-08-Dallas-pachi2-2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-ladder/2011-08-09-pachi2-BlueSpark.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-ladder/2011-08-09-somrak-pachi2-2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-ladder/2011-08-24-StoneGrid-pachi2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-ladder/2011-09-04-pachi2-stv.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-ladder/2012-03-16-IMC-pachi2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-semeai/2011-01-15-pachi2-rollingon.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-semeai/2011-06-05-Zen19-pachi2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-semeai/2011-06-05-tazaki-pachi30s.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-semeai/2011-06-18-dorabon-pachi2-4.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/by-semeai/2012-03-15-pachi2-Leech.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2010-12-05-pachi-CzechBot.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-01-11-llopl-pachi2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-01-15-pachi2-rollingon.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-06-05-Zen19-pachi2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-06-05-tazaki-pachi30s.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-06-06-tyzef-pachi30s.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-06-07-fidibus-pachi30s.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-06-09-botkiller2-pachi30s.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-06-09-jinen-pachi30s-2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-06-10-pachi30s-samba-2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-06-13-pachi30s-Jep.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-06-18-dorabon-pachi2-4.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-07-28-pachi2-Novicer.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-07-28-pachi2-pkunzip-2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-08-08-Dallas-pachi2-2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-08-09-pachi2-BlueSpark.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-08-09-somrak-pachi2-2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-08-12-xiaosugi-pachi2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-08-24-StoneGrid-pachi2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2011-09-04-pachi2-stv.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2012-01-17-pachi2-Soromon-3.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2012-03-15-pachi2-Leech.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2012-03-16-IMC-pachi2.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/games/2012-03-21-pachi2-Hujisawa-3.sgf"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="t-regress/test-game.sh" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-unit/Makefile" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-unit/README" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-unit/sar.t" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="t-unit/test.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="t-unit/test.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tactics/1lib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="tactics/1lib.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tactics/2lib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="tactics/2lib.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tactics/Makefile" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tactics/ladder.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="tactics/ladder.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tactics/nakade.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="tactics/nakade.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tactics/nlib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="tactics/nlib.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tactics/selfatari.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="tactics/selfatari.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tactics/util.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="tactics/util.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="timeinfo.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="timeinfo.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/autobook/README" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/autobook/autobook.sh" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/autobook/autobook2fbook.sh" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/autobook/eval.sh" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/autobook/expand.sh" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/autobook/walk.sh" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/complete-tromptaylor.gtp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/complete.gtp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/genmove.gtp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/genmove19.gtp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/gentbook.sh" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/kgslog2gtp.pl" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/pattern3_show.pl" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/pattern_bayes_gen.sh" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/pattern_bayes_merge.sh" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/pattern_byplayer.sh" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/pattern_getdrops.pl" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/pattern_spatial_gen.sh" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/pattern_spatial_show.pl" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/sgf-analyse.pl" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/sgf-ratemove.sh" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/sgf2gtp.pl" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/sgf2gtp.py" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/sgflib/.gitignore" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/sgflib/__init__.py" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/sgflib/sgflib.py" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/sgflib/typelib.py" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/spirit.gtp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tools/twogtp.py" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="uct/Makefile" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="uct/dynkomi.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="uct/dynkomi.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="uct/internal.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="uct/plugin.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="uct/plugin/example.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="uct/plugin/wolf.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="uct/plugins.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="uct/plugins.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="uct/policy/Makefile" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="uct/policy/generic.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="uct/policy/generic.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="uct/policy/ucb1.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="uct/policy/ucb1amaf.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="uct/prior.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="uct/prior.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="uct/search.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="uct/search.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="uct/slave.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="uct/slave.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="uct/tree.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="uct/tree.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="uct/uct.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="uct/uct.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="uct/walk.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="uct/walk.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="util.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="version.h" ex="false" tool="3" flavor2="0">
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>
