@@ -54,7 +54,7 @@ static struct hash_counts h_counts;
 static long parent_not_found = 0;
 static long parent_leaf = 0;
 static long node_not_found = 0;
-
+int testGithub = 0;
 /* Hash table entry mapping path to node. */
 struct tree_hash {
 	path_t coord_path;
