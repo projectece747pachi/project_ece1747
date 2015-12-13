@@ -441,6 +441,11 @@ time_stop_conditions(struct time_info *ti, struct board *b, int fuseki_end, int 
 			ti->len.t.byoyomi_periods, net_lag);
 
 	/* Account for lag. */
-	lag_adjust(&stop->desired.time, net_lag);
-	lag_adjust(&stop->worst.time, net_lag);
+	//lag_adjust(&stop->desired.time, net_lag);
+	//lag_adjust(&stop->worst.time, net_lag);
+        fprintf(stderr, "Not accounting for lag, running on local\n");
+        ti->len.t.timer_start = time_now();
+        stop->desired.time = 8;
+        stop->worst.time = 10;
+        //fprintf(stderr, "Lag adjusted worst %0.2f\n", stop->worst.time);
 }

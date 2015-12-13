@@ -25,6 +25,7 @@
 #include "random.h"
 #include "version.h"
 #include "network.h"
+#include "stats_logger.h"
 
 int debug_level = 3;
 bool debug_boardprint = true;
@@ -92,6 +93,11 @@ int main(int argc, char *argv[])
 	char *ruleset = NULL;
 
 	seed = time(NULL) ^ getpid();
+        
+        stats_log = fopen ( STATS_LOGGER_FILENAME, "w" );
+        stats_log_nodes_explored = 0;
+        stats_log_move_count = 1;
+        fprintf (stats_log, "Move #  |  Moves Explored  |  Games Simulated this Move |  Tree Depth\n");
 
 	int opt;
 	while ((opt = getopt(argc, argv, "c:e:d:Df:g:l:r:s:t:u:")) != -1) {
@@ -204,7 +210,20 @@ int main(int argc, char *argv[])
 
 	for (;;) {
 		char buf[4096];
-		while (fgets(buf, 4096, stdin)) {
+                //automated test code
+                int iterations = 0;
+                int max_moves = 350;
+                
+		//while (fgets(buf, 4096, stdin)) {
+                while ( iterations < max_moves ) {
+                    if ( iterations & 1 )
+                    {
+                        sprintf(buf, "genmove w");
+                    }
+                    else
+                    {
+                        sprintf(buf, "genmove b");
+                    }
 			if (DEBUGL(1))
 				fprintf(stderr, "IN: %s", buf);
 
@@ -222,11 +241,14 @@ int main(int argc, char *argv[])
 				 * close the connection with a wrong peer. */
 				break;
 			}
+                        
+                    iterations++;
 		}
 		if (!gtp_port) break;
 		open_gtp_connection(&gtp_sock, gtp_port);
 	}
 	done_engine(e);
 	chat_done();
+        fclose (stats_log);
 	return 0;
 }

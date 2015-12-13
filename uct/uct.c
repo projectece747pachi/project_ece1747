@@ -28,6 +28,7 @@
 #include "uct/tree.h"
 #include "uct/uct.h"
 #include "uct/walk.h"
+#include "stats_logger.h"
 
 struct uct_policy *policy_ucb1_init(struct uct *u, char *arg);
 struct uct_policy *policy_ucb1amaf_init(struct uct *u, char *arg, struct board *board);
@@ -503,6 +504,13 @@ uct_genmove(struct engine *e, struct board *b, struct time_info *ti, enum stone 
 		fprintf(stderr, "genmove in %0.2fs (%d games/s, %d games/s/thread)\n",
 			time, (int)(played_games/time), (int)(played_games/time/u->threads));
 	}
+        
+        // Move #  |  Moves Explored  |  Games Simulated this Move |  Tree Depth
+        fprintf (stats_log, "%d  %d  %d  %d\n", stats_log_move_count, stats_log_nodes_explored,
+                played_games, u->t->max_depth);
+        
+        stats_log_nodes_explored = 0;
+        stats_log_move_count++;
 
 	uct_progress_status(u, u->t, color, played_games, &best_coord);
 
@@ -634,7 +642,9 @@ uct_state_init(char *arg, struct board *b)
 	u->thread_model = TM_TREEVL;
 	u->virtual_loss = 1;
 
-	u->pondering_opt = true;
+	//u->pondering_opt = true;
+        //turn pondering off for experiments
+        u->pondering_opt = false;
 
 	u->fuseki_end = 20; // max time at 361*20% = 72 moves (our 36th move, still 99 to play)
 	u->yose_start = 40; // (100-40-25)*361/100/2 = 63 moves still to play by us then

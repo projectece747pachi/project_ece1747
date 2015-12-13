@@ -199,6 +199,8 @@ tree_node_dump(struct tree *tree, struct tree_node *node, int treeparity, int l,
 		tree_node_get_value(tree, treeparity, node->amaf.value), node->amaf.playouts,
 		tree_node_criticality(tree, node), node->descents,
 		node->hints, children, node->hash);
+        
+        stats_log_nodes_explored++;
 
 	/* Print nodes sorted by #playouts. */
 

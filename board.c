@@ -51,7 +51,7 @@ board_init(char *fbookfile)
 	b->fbookfile = fbookfile;
 
 	// Default setup
-	b->size = 9 + 2;
+	b->size = BOARD_MAX_SIZE + 2;
 	board_clear(b);
 
 	return b;
