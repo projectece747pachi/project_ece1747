@@ -399,6 +399,80 @@ uct_search(struct uct *u, struct board *b, struct time_info *ti, enum stone colo
 	return ctx->games;
 }
 
+/* Run pipelined time-limited MCTS search on foreground. */
+static int
+uct_pipeline_search(struct uct *u, struct board *b, struct time_info *ti, enum stone color, struct tree *t, bool print_progress)
+{
+	struct uct_search_state s;
+	uct_pipeline_search_start(u, b, color, t, ti, &s);
+	if (UDEBUGL(2) && s.base_playouts > 0)
+		fprintf(stderr, "<pre-simulated %d games>\n", s.base_playouts);
+
+	/* The search tree is ctx->t. This is currently == . It is important
+	 * to reference ctx->t directly since the
+	 * thread manager will swap the tree pointer asynchronously. */
+
+	/* Now, just periodically poll the search tree. */
+	/* Note that in case of TD_GAMES, threads will not wait for
+	 * the uct_search_check_stop() signalization. */
+	while (1) {
+		time_sleep(TREE_BUSYWAIT_INTERVAL);
+		/* TREE_BUSYWAIT_INTERVAL should never be less than desired time, or the
+		 * time control is broken. But if it happens to be less, we still search
+		 * at least 100ms otherwise the move is completely random. */
+
+		int i = uct_search_games(&s);
+		/* Print notifications etc. */
+		uct_search_progress(u, b, color, t, ti, &s, i);
+		/* Check if we should stop the search. */
+		if (uct_search_check_stop(u, b, color, t, ti, &s, i))
+			break;
+	}
+
+	struct uct_thread_ctx *ctx = uct_search_stop();
+	if (UDEBUGL(2)) tree_dump(t, u->dumpthres);
+	if (UDEBUGL(2))
+		fprintf(stderr, "(avg score %f/%d; dynkomi's %f/%d value %f/%d)\n",
+			t->avg_score.value, t->avg_score.playouts,
+			u->dynkomi->score.value, u->dynkomi->score.playouts,
+			u->dynkomi->value.value, u->dynkomi->value.playouts);
+	if (print_progress)
+		uct_progress_status(u, t, color, ctx->games, NULL);
+
+	if (u->debug_after.playouts > 0) {
+		/* Now, start an additional run of playouts, single threaded. */
+		struct time_info debug_ti = {
+			.period = TT_MOVE,
+			.dim = TD_GAMES,
+		};
+		debug_ti.len.games = t->root->u.playouts + u->debug_after.playouts;
+
+		board_print_custom(b, stderr, uct_printhook_ownermap);
+		fprintf(stderr, "--8<-- UCT debug post-run begin (%d:%d) --8<--\n", u->debug_after.level, u->debug_after.playouts);
+
+		int debug_level_save = debug_level;
+		int u_debug_level_save = u->debug_level;
+		int p_debug_level_save = u->playout->debug_level;
+		debug_level = u->debug_after.level;
+		u->debug_level = u->debug_after.level;
+		u->playout->debug_level = u->debug_after.level;
+		uct_halt = false;
+
+		uct_playouts(u, b, color, t, &debug_ti);
+		tree_dump(t, u->dumpthres);
+
+		uct_halt = true;
+		debug_level = debug_level_save;
+		u->debug_level = u_debug_level_save;
+		u->playout->debug_level = p_debug_level_save;
+
+		fprintf(stderr, "--8<-- UCT debug post-run finished --8<--\n");
+	}
+
+	u->played_own += ctx->games;
+	return ctx->games;
+}
+
 /* Start pondering background with @color to play. */
 static void
 uct_pondering_start(struct uct *u, struct board *b0, struct tree *t, enum stone color)
@@ -542,6 +616,77 @@ uct_genmove(struct engine *e, struct board *b, struct time_info *ti, enum stone 
 	return coord_copy(best_coord);
 }
 
+static coord_t *
+uct_pipeline_genmove(struct engine *e, struct board *b, struct time_info *ti, enum stone color, bool pass_all_alive)
+{
+	double start_time = time_now();
+	struct uct *u = e->data;
+        int base_playouts;
+        int played_games;
+	u->pass_all_alive |= pass_all_alive;
+	uct_pondering_stop(u);
+	uct_genmove_setup(u, b, color);
+
+        /* Start the Monte Carlo Tree Search! */
+        if (color == S_WHITE)
+        {
+                fprintf(stderr, "uct_pipeline_genmove(): Starting UCT Pipelined Tree Search\n");
+            base_playouts = u->t->root->u.playouts;
+            played_games = uct_pipeline_search(u, b, ti, color, u->t, false);
+        }
+        else
+        {
+                fprintf(stderr, "uct_pipeline_genmove(): Starting UCT Tree Search\n");
+            base_playouts = u->t->root->u.playouts;
+            played_games = uct_search(u, b, ti, color, u->t, false);
+        }
+
+	coord_t best_coord;
+	struct tree_node *best;
+	best = uct_search_result(u, b, color, u->pass_all_alive, played_games, base_playouts, &best_coord);
+
+	if (UDEBUGL(2)) {
+		double time = time_now() - start_time + 0.000001; /* avoid divide by zero */
+		fprintf(stderr, "genmove in %0.2fs (%d games/s, %d games/s/thread)\n",
+			time, (int)(played_games/time), (int)(played_games/time/u->threads));
+	}
+        
+        // Move #  |  Moves Explored  |  Games Simulated this Move |  Tree Depth
+        fprintf (stats_log, "%d  %d  %d  %d\n", stats_log_move_count, stats_log_nodes_explored,
+                played_games, u->t->max_depth);
+        
+        stats_log_nodes_explored = 0;
+        stats_log_move_count++;
+
+	uct_progress_status(u, u->t, color, played_games, &best_coord);
+
+	if (!best) {
+		/* Pass or resign. */
+		if (is_pass(best_coord))
+			u->initial_extra_komi = u->t->extra_komi;
+		reset_state(u);
+		return coord_copy(best_coord);
+	}
+
+	if (!u->t->untrustworthy_tree) {
+		tree_promote_node(u->t, &best);
+	} else {
+		/* Throw away an untrustworthy tree. */
+		/* Preserve dynamic komi information, though, that is important. */
+		u->initial_extra_komi = u->t->extra_komi;
+		reset_state(u);
+	}
+
+	/* After a pass, pondering is harmful for two reasons:
+	 * (i) We might keep pondering even when the game is over.
+	 * Of course this is the case for opponent resign as well.
+	 * (ii) More importantly, the ownermap will get skewed since
+	 * the UCT will start cutting off any playouts. */
+	if (u->pondering_opt && u->t && !is_pass(node_coord(best))) {
+		uct_pondering_start(u, b, u->t, stone_other(color));
+	}
+	return coord_copy(best_coord);
+}
 
 bool
 uct_gentbook(struct engine *e, struct board *b, struct time_info *ti, enum stone color)
@@ -1275,6 +1420,37 @@ engine_uct_init(char *arg, struct board *b)
 	e->undo = uct_undo;
 	e->result = uct_result;
 	e->genmove = uct_genmove;
+	e->genmoves = uct_genmoves;
+	e->evaluate = uct_evaluate;
+	e->dead_group_list = uct_dead_group_list;
+	e->stop = uct_stop;
+	e->done = uct_done;
+	e->data = u;
+	if (u->slave)
+		e->notify = uct_notify;
+
+	const char banner[] = "If you believe you have won but I am still playing, "
+		"please help me understand by capturing all dead stones. "
+		"Anyone can send me 'winrate' in private chat to get my assessment of the position.";
+	if (!u->banner) u->banner = "";
+	e->comment = malloc2(sizeof(banner) + strlen(u->banner) + 1);
+	sprintf(e->comment, "%s %s", banner, u->banner);
+
+	return e;
+}
+
+struct engine *
+engine_uct_pipeline_init(char *arg, struct board *b)
+{
+	struct uct *u = uct_state_init(arg, b);
+	struct engine *e = calloc2(1, sizeof(struct engine));
+	e->name = "UCT_PIPELINE";
+	e->printhook = uct_printhook_ownermap;
+	e->notify_play = uct_notify_play;
+	e->chat = uct_chat;
+	e->undo = uct_undo;
+	e->result = uct_result;
+	e->genmove = uct_pipeline_genmove;
 	e->genmoves = uct_genmoves;
 	e->evaluate = uct_evaluate;
 	e->dead_group_list = uct_dead_group_list;

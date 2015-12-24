@@ -66,6 +66,8 @@ struct uct_search_state {
 int uct_search_games(struct uct_search_state *s);
 
 void uct_search_start(struct uct *u, struct board *b, enum stone color, struct tree *t, struct time_info *ti, struct uct_search_state *s);
+void uct_pipeline_search_start(struct uct *u, struct board *b, enum stone color, struct tree *t, struct time_info *ti, struct uct_search_state *s);
+
 struct uct_thread_ctx *uct_search_stop(void);
 
 void uct_search_progress(struct uct *u, struct board *b, enum stone color, struct tree *t, struct time_info *ti, struct uct_search_state *s, int i);

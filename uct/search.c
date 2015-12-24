@@ -21,7 +21,15 @@
 #include "uct/tree.h"
 #include "uct/uct.h"
 #include "uct/walk.h"
+#include "uct/pipeline_queues.h"
 
+
+uct_simulated_nodes_circ_buf simulated_nodes_circ_buf;
+uct_searched_nodes_circ_buf search_nodes_circ_buf;
+int searched_nodes_circ_buf_start = 0;
+int searched_nodes_circ_buf_end = 0;
+int simulated_nodes_circ_buf_start = 0;
+int simulated_nodes_circ_buf_end = 0;
 
 /* Default time settings for the UCT engine. In distributed mode, slaves are
  * unlimited by default and all control is done on the master, either in time
@@ -107,6 +115,71 @@ spawn_worker(void *ctx_)
 	return ctx;
 }
 
+/* Pipeline Workers */
+static void *
+spawn_search_worker(void *ctx_)
+{
+	struct uct_thread_ctx *ctx = ctx_;
+        
+	/* Setup */
+	fast_srandom(ctx->seed);
+	/* Run */
+            fprintf(stderr, "spawn_search_worker(): tid=%d starting select nodes\n", ctx->tid);
+	ctx->games = uct_select_mcts_nodes(ctx->u, ctx->b, ctx->color, ctx->t, ctx->ti);
+	/* Finish */
+	pthread_mutex_lock(&finish_serializer);
+	pthread_mutex_lock(&finish_mutex);
+	finish_thread = ctx->tid;
+	pthread_cond_signal(&finish_cond);
+	pthread_mutex_unlock(&finish_mutex);
+	return ctx;
+}
+
+static void *
+spawn_simulate_worker(void *ctx_)
+{
+	struct uct_thread_ctx *ctx = ctx_;
+	/* Setup */
+	fast_srandom(ctx->seed);
+	/* Run */
+            fprintf(stderr, "spawn_remaining_worker(): tid=%d starting simulate tasks\n", ctx->tid);
+	ctx->games = uct_simulate_mcts_playouts(ctx->u, ctx->b, ctx->color, ctx->t, ctx->ti);
+	/* Finish */
+	pthread_mutex_lock(&finish_serializer);
+	pthread_mutex_lock(&finish_mutex);
+	finish_thread = ctx->tid;
+	pthread_cond_signal(&finish_cond);
+        pthread_cond_signal(&search_finish_cond);
+        pthread_cond_signal(&simulate_finish_cond);
+        pthread_cond_signal(&simulate_finish_cond2);
+        pthread_cond_signal(&consumption_cond1);
+        pthread_cond_signal(&update_finish_cond);
+	pthread_mutex_unlock(&finish_mutex);
+	return ctx;
+}
+
+static void *
+spawn_update_worker(void *ctx_)
+{
+	struct uct_thread_ctx *ctx = ctx_;
+	/* Setup */
+	fast_srandom(ctx->seed);
+	/* Run */
+            fprintf(stderr, "spawn_update_worker(): tid=%d starting update tasks\n", ctx->tid);
+	ctx->games = uct_update_mcts_playouts(ctx->u, ctx->b, ctx->color, ctx->t, ctx->ti);
+	/* Finish */
+	pthread_mutex_lock(&finish_serializer);
+	pthread_mutex_lock(&finish_mutex);
+	finish_thread = ctx->tid;
+	pthread_cond_signal(&finish_cond);
+        pthread_cond_signal(&simulate_finish_cond2);
+        pthread_cond_signal(&consumption_cond2);
+	pthread_mutex_unlock(&finish_mutex);
+	return ctx;
+}
+
+/* PIPELINE WORKERS END*/
+
 /* Thread manager, controlling worker threads. It must be called with
  * finish_mutex lock held, but it will unlock it itself before exiting;
  * this is necessary to be completely deadlock-free. */
@@ -125,7 +198,7 @@ spawn_thread_manager(void *ctx_)
 	fast_srandom(mctx->seed);
 
 	int played_games = 0;
-	pthread_t threads[u->threads];
+	pthread_t threads[u->threads + 2];
 	int joined = 0;
 
 	uct_halt = 0;
@@ -136,7 +209,7 @@ spawn_thread_manager(void *ctx_)
 	}
 
 	/* Spawn threads... */
-	for (int ti = 0; ti < u->threads; ti++) {
+	for (int ti = 0; ti < (u->threads +2); ti++) {
 		struct uct_thread_ctx *ctx = malloc2(sizeof(*ctx));
 		ctx->u = u; ctx->b = mctx->b; ctx->color = mctx->color;
 		mctx->t = ctx->t = t;
@@ -151,7 +224,7 @@ spawn_thread_manager(void *ctx_)
 	}
 
 	/* ...and collect them back: */
-	while (joined < u->threads) {
+	while (joined < (u->threads + 2)) {
 		/* Wait for some thread to finish... */
 		pthread_cond_wait(&finish_cond, &finish_mutex);
 		if (finish_thread < 0) {
@@ -184,6 +257,126 @@ spawn_thread_manager(void *ctx_)
 
 
 /*** THREAD MANAGER end */
+
+/* Pipeline Thread Manager */
+static void *
+spawn_pipeline_thread_manager(void *ctx_)
+{
+	/* In thread_manager, we use only some of the ctx fields. */
+	struct uct_thread_ctx *mctx = ctx_;
+	struct uct *u = mctx->u;
+	struct tree *t = mctx->t;
+	fast_srandom(mctx->seed);
+
+	int played_games = 0;
+	pthread_t threads[u->threads + 2];
+	int joined = 0;
+        int i = 0;
+
+	uct_halt = 0;
+        search_finish_cond = PTHREAD_COND_INITIALIZER;
+        simulate_finish_cond = PTHREAD_COND_INITIALIZER; // Search -> Simulate
+        simulate_finish_cond2 = PTHREAD_COND_INITIALIZER; // Simulate -> Update
+        update_finish_cond = PTHREAD_COND_INITIALIZER;
+        pipeline_mutex = PTHREAD_MUTEX_INITIALIZER;  // Search -> Simulate
+        pipeline_mutex2 = PTHREAD_MUTEX_INITIALIZER; // Simulate -> Update
+        consumption_mutex1 = PTHREAD_MUTEX_INITIALIZER; 
+        consumption_mutex2 = PTHREAD_MUTEX_INITIALIZER; 
+        consumption_cond1 = PTHREAD_COND_INITIALIZER;
+        consumption_cond2 = PTHREAD_COND_INITIALIZER; 
+        searched_nodes_circ_buf_start = 0;
+        searched_nodes_circ_buf_end = 0;
+        simulated_nodes_circ_buf_start = 0;
+        simulated_nodes_circ_buf_end = 0;
+        
+        for ( i = 0; i < MAX_CIRC_BUF_SIZE; i++ )
+        {
+          search_nodes_circ_buf.node[i].state = CONSUMED;
+          simulated_nodes_circ_buf.node[i].state = CONSUMED;
+        }
+        
+
+	/* Garbage collect the tree by preference when pondering. */
+	if (u->pondering && t->nodes && t->nodes_size >= t->pruning_threshold) {
+		t->root = tree_garbage_collect(t, t->root);
+	}
+
+	/* Spawn threads... */
+	//for (int ti = 0; ti < ( u->threads * 3 ); ti += 3) {
+        struct uct_thread_ctx *ctx = malloc2(sizeof(*ctx));
+        ctx->u = u; ctx->b = mctx->b; ctx->color = mctx->color;
+        mctx->t = ctx->t = t;
+        ctx->tid = 0; ctx->seed = fast_random(65536);
+        ctx->ti = mctx->ti;
+
+        struct uct_thread_ctx *ctx3 = malloc2(sizeof(*ctx));
+        ctx3->u = u; ctx3->b = mctx->b; ctx3->color = mctx->color;
+        mctx->t = ctx3->t = t;
+        ctx3->tid = 1; ctx3->seed = fast_random(65536) + 1;
+        ctx3->ti = mctx->ti;
+                
+        pthread_attr_t a;
+        pthread_attr_t c;
+        pthread_attr_init(&a);
+        pthread_attr_init(&c);
+        pthread_attr_setstacksize(&a, 1048576);
+        pthread_attr_setstacksize(&c, 1048576);
+        pthread_create(&threads[0], &a, spawn_search_worker, ctx);
+        pthread_create(&threads[1], &c, spawn_update_worker, ctx3);
+		//if (UDEBUGL(4))
+        fprintf(stderr, "Spawned pipeline workers %d, %d\n", 0, 1);
+	//}
+        
+        for (int ti = 0; ti < u->threads; ti++) {
+            
+                struct uct_thread_ctx *ctx2 = malloc2(sizeof(*ctx));
+                ctx2->u = u; ctx2->b = mctx->b; ctx2->color = mctx->color;
+                mctx->t = ctx2->t = t;
+                ctx2->tid = (ti + 2); ctx2->seed = fast_random(65536) + ti + 2;
+                ctx2->ti = mctx->ti;
+                
+                pthread_attr_t b;
+                pthread_attr_init(&b);
+                pthread_attr_setstacksize(&b, 1048576);
+                pthread_create(&threads[ti+2], &b, spawn_simulate_worker, ctx2);
+                fprintf(stderr, "Spawned simulate pipeline worker %d\n", (ti+2));
+        }
+
+	/* ...and collect them back: */
+	while (joined < ( u->threads + 2 )) {
+		/* Wait for some thread to finish... */
+		pthread_cond_wait(&finish_cond, &finish_mutex);
+                fprintf(stderr, "Thread %d finished\n", finish_thread);
+		if (finish_thread < 0) {
+			/* Stop-by-caller. Tell the workers to wrap up
+			 * and unblock them from terminating. */
+			uct_halt = 1;
+			/* We need to make sure the workers do not complete
+			 * the termination sequence before we get officially
+			 * stopped - their wake and the stop wake could get
+			 * coalesced. */
+			pthread_mutex_unlock(&finish_serializer);
+			continue;
+		}
+		/* ...and gather its remnants. */
+		struct uct_thread_ctx *ctx;
+		pthread_join(threads[finish_thread], (void **) &ctx);
+		played_games += ctx->games;
+		joined++;
+		free(ctx);
+		//if (UDEBUGL(4))
+			fprintf(stderr, "Joined worker %d\n", finish_thread);
+		pthread_mutex_unlock(&finish_serializer);
+	}
+
+	pthread_mutex_unlock(&finish_mutex);
+
+	mctx->games = played_games;
+	return mctx;
+}
+
+
+/*** PIPELINE THREAD MANAGER end */
 
 /*** Search infrastructure: */
 
@@ -227,6 +420,44 @@ uct_search_start(struct uct *u, struct board *b, enum stone color,
 	pthread_mutex_lock(&finish_mutex);
             fprintf(stderr, "Spawning Thread Manager\n");
 	pthread_create(&thread_manager, NULL, spawn_thread_manager, s->ctx);
+	thread_manager_running = true;
+}
+
+void
+uct_pipeline_search_start(struct uct *u, struct board *b, enum stone color,
+		 struct tree *t, struct time_info *ti,
+		 struct uct_search_state *s)
+{
+	/* Set up search state. */
+	s->base_playouts = s->last_dynkomi = s->last_print = t->root->u.playouts;
+	s->print_interval = u->reportfreq * u->threads;
+	s->fullmem = false;
+
+	if (ti) {
+		if (ti->period == TT_NULL) {
+			if (u->slave) {
+				*ti = unlimited_ti;
+                                fprintf(stderr, "***UCT_search_Start: Slave***\n"); 
+			} else {
+				*ti = default_ti;
+                                fprintf(stderr, "***UCT_search_start: Start Timer***\n"); 
+				time_start_timer(ti);
+			}
+		}
+		time_stop_conditions(ti, b, u->fuseki_end, u->yose_start, u->max_maintime_ratio, &s->stop);
+	}
+
+	/* Fire up the tree search thread manager, which will in turn
+	 * spawn the searching threads. */
+	assert(u->threads > 0);
+	assert(!thread_manager_running);
+	static struct uct_thread_ctx mctx;
+	mctx = (struct uct_thread_ctx) { .u = u, .b = b, .color = color, .t = t, .seed = fast_random(65536), .ti = ti };
+	s->ctx = &mctx;
+	pthread_mutex_lock(&finish_serializer);
+	pthread_mutex_lock(&finish_mutex);
+            fprintf(stderr, "Spawning Pipeline Thread Manager\n");
+	pthread_create(&thread_manager, NULL, spawn_pipeline_thread_manager, s->ctx);
 	thread_manager_running = true;
 }
 

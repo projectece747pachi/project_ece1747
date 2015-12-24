@@ -42,6 +42,7 @@ enum engine_id {
 	E_UCT,
 	E_DISTRIBUTED,
 	E_JOSEKI,
+        E_UCT_PIPELINE,
 	E_MAX,
 };
 
@@ -54,6 +55,7 @@ static struct engine *(*engine_init[E_MAX])(char *arg, struct board *b) = {
 	engine_uct_init,
 	engine_distributed_init,
 	engine_joseki_init,
+        engine_uct_pipeline_init,
 };
 
 static struct engine *init_engine(enum engine_id engine, char *e_arg, struct board *b)
@@ -97,6 +99,7 @@ int main(int argc, char *argv[])
         stats_log = fopen ( STATS_LOGGER_FILENAME, "w" );
         stats_log_nodes_explored = 0;
         stats_log_move_count = 1;
+        wasLastPlayResign = false;
         fprintf (stats_log, "Move #  |  Moves Explored  |  Games Simulated this Move |  Tree Depth\n");
 
 	int opt;
@@ -122,6 +125,8 @@ int main(int argc, char *argv[])
 					engine = E_PATTERNPLAY;
 				} else if (!strcasecmp(optarg, "joseki")) {
 					engine = E_JOSEKI;
+				} else if (!strcasecmp(optarg, "uct_pipeline")) {
+					engine = E_UCT_PIPELINE;                                        
 				} else {
 					fprintf(stderr, "%s: Invalid -e argument %s\n", argv[0], optarg);
 					exit(1);
@@ -212,8 +217,8 @@ int main(int argc, char *argv[])
 		char buf[4096];
                 //automated test code
                 int iterations = 0;
-                int max_moves = 350;
-                
+                int max_moves = 360;
+
 		//while (fgets(buf, 4096, stdin)) {
                 while ( iterations < max_moves ) {
                     if ( iterations & 1 )
@@ -243,9 +248,14 @@ int main(int argc, char *argv[])
 			}
                         
                     iterations++;
+                    if ( wasLastPlayResign )
+                        break;
 		}
 		if (!gtp_port) break;
 		open_gtp_connection(&gtp_sock, gtp_port);
+                
+                if ( wasLastPlayResign )
+                    break;
 	}
 	done_engine(e);
 	chat_done();

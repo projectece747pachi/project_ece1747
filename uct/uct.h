@@ -5,6 +5,7 @@
 #include "move.h"
 
 struct engine *engine_uct_init(char *arg, struct board *b);
+struct engine *engine_uct_pipeline_init(char *arg, struct board *b);
 
 struct board;
 struct time_info;

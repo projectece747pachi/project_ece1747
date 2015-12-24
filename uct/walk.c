@@ -21,9 +21,15 @@
 #include "uct/tree.h"
 #include "uct/uct.h"
 #include "uct/walk.h"
+#include "uct/pipeline_queues.h"
+#include "timeinfo.h"
 
 #define DESCENT_DLEN 512
 
+#ifdef FILE_LOGGING
+static double total_search_time, total_simulate_time, total_update_time = 0;
+FILE *search_time_file, *simulate_time_file, *update_time_file;
+#endif
 
 void
 uct_progress_text(struct uct *u, struct tree *t, enum stone color, int playouts)
@@ -633,3 +639,551 @@ uct_playouts(struct uct *u, struct board *b, enum stone color, struct tree *t, s
 	}
 	return i;
 }
+
+int
+uct_select_mcts_node(struct uct *u, struct board *b, enum stone player_color, struct tree *t)
+{
+#ifdef FILE_LOGGING
+    double search_time = time_now();
+#endif 
+    if (uct_halt)
+    {
+        return 0;
+    }    
+	struct board b2;
+	board_copy(&b2, b);
+
+	struct playout_amafmap amaf;
+	amaf.gamelen = amaf.game_baselen = 0;
+       //fprintf(stderr, "Begin Selection Stage\n");
+	/* Walk the tree until we find a leaf, then expand it and do
+	 * a random playout. */
+            //fprintf(stderr, "uct_playout(): Walk Tree\n");
+	struct tree_node *n = t->root;
+	enum stone node_color = stone_other(player_color);
+	assert(node_color == t->root_color);
+
+	/* Make sure the root node is expanded. */
+	if (tree_leaf_node(n) && !__sync_lock_test_and_set(&n->is_expanded, 1))
+		tree_expand_node(t, n, &b2, player_color, u, 1);
+
+	/* Tree descent history. */
+	/* XXX: This is somewhat messy since @n and descent[dlen-1].node are
+	 * redundant. */
+	struct uct_descent descent[DESCENT_DLEN];
+	descent[0].node = n; descent[0].lnode = NULL;
+	int dlen = 1;
+	/* Total value of the sequence. */
+	struct move_stats seq_value = { .playouts = 0 };
+	/* The last "significant" node along the descent (i.e. node
+	 * with higher than configured number of playouts). For black
+	 * and white. */
+	struct tree_node *significant[2] = { NULL, NULL };
+	if (n->u.playouts >= u->significant_threshold)
+		significant[node_color - 1] = n;
+
+	int result;
+	int pass_limit = (board_size(&b2) - 2) * (board_size(&b2) - 2) / 2;
+	int passes = is_pass(b->last_move.coord) && b->moves > 0;
+
+	/* debug */
+	static char spaces[] = "\0                                                      ";
+	/* /debug */
+	if (UDEBUGL(8))
+		fprintf(stderr, "--- (#%d) UCT walk with color %d\n", t->root->u.playouts, player_color);
+
+	while (!tree_leaf_node(n) && passes < 2) {
+		spaces[dlen - 1] = ' '; spaces[dlen] = 0;
+
+
+		/*** Choose a node to descend to: */
+
+		/* Parity is chosen already according to the child color, since
+		 * it is applied to children. */
+		node_color = stone_other(node_color);
+		int parity = (node_color == player_color ? 1 : -1);
+
+		assert(dlen < DESCENT_DLEN);
+		descent[dlen] = descent[dlen - 1];
+		if (u->local_tree && (!descent[dlen].lnode || descent[dlen].node->d >= u->tenuki_d)) {
+			/* Start new local sequence. */
+			/* Remember that node_color already holds color of the
+			 * to-be-found child. */
+			descent[dlen].lnode = node_color == S_BLACK ? t->ltree_black : t->ltree_white;
+		}
+
+		if (!u->random_policy_chance || fast_random(u->random_policy_chance))
+			u->policy->descend(u->policy, t, &descent[dlen], parity, b2.moves > pass_limit);
+		else
+			u->random_policy->descend(u->random_policy, t, &descent[dlen], parity, b2.moves > pass_limit);
+
+
+		/*** Perform the descent: */
+
+		if (descent[dlen].node->u.playouts >= u->significant_threshold) {
+			significant[node_color - 1] = descent[dlen].node;
+		}
+
+		seq_value.playouts += descent[dlen].value.playouts;
+		seq_value.value += descent[dlen].value.value * descent[dlen].value.playouts;
+		n = descent[dlen++].node;
+		assert(n == t->root || n->parent);
+		if (UDEBUGL(7))
+			fprintf(stderr, "%s+-- UCT sent us to [%s:%d] %d,%f\n",
+			        spaces, coord2sstr(node_coord(n), t->board),
+				node_coord(n), n->u.playouts,
+				tree_node_get_value(t, parity, n->u.value));
+
+		if (u->virtual_loss)
+			__sync_fetch_and_add(&n->descents, u->virtual_loss);
+
+		struct move m = { node_coord(n), node_color };
+		int res = board_play(&b2, &m);
+
+		if (res < 0 || (!is_pass(m.coord) && !group_at(&b2, m.coord)) /* suicide */
+		    || b2.superko_violation) {
+			if (UDEBUGL(4)) {
+				for (struct tree_node *ni = n; ni; ni = ni->parent)
+					fprintf(stderr, "%s<%"PRIhash"> ", coord2sstr(node_coord(ni), t->board), ni->hash);
+				fprintf(stderr, "marking invalid %s node %d,%d res %d group %d spk %d\n",
+				        stone2str(node_color), coord_x(node_coord(n),b), coord_y(node_coord(n),b),
+					res, group_at(&b2, m.coord), b2.superko_violation);
+			}
+			n->hints |= TREE_HINT_INVALID;
+			result = 0;
+			goto end;
+		}
+
+		assert(node_coord(n) >= -1);
+		record_amaf_move(&amaf, node_coord(n), board_playing_ko_threat(&b2));
+
+		if (is_pass(node_coord(n)))
+			passes++;
+		else
+			passes = 0;
+
+		enum stone next_color = stone_other(node_color);
+		/* We need to make sure only one thread expands the node. If
+		 * we are unlucky enough for two threads to meet in the same
+		 * node, the latter one will simply do another simulation from
+		 * the node itself, no big deal. t->nodes_size may exceed
+		 * the maximum in multi-threaded case but not by much so it's ok.
+		 * The size test must be before the test&set not after, to allow
+		 * expansion of the node later if enough nodes have been freed. */
+		if (tree_leaf_node(n)
+		    && n->u.playouts - u->virtual_loss >= u->expand_p && t->nodes_size < u->max_tree_size
+		    && !__sync_lock_test_and_set(&n->is_expanded, 1))
+                        //Queue expansion node here
+			tree_expand_node(t, n, &b2, next_color, u, -parity);
+	}
+        
+    pthread_mutex_lock(&pipeline_mutex);    
+    //Queue Simulation/Remaining node here
+    //store searched node
+    //pthread_mutex_lock(&consumption_mutex1);
+    while ( (search_nodes_circ_buf.node[searched_nodes_circ_buf_end].state != CONSUMED) && !uct_halt )
+    {
+        //fprintf(stderr, "Waiting in search node for consumed, buf_end=%d\n", searched_nodes_circ_buf_end);
+        
+                pthread_cond_wait ( &consumption_cond1, &pipeline_mutex );
+
+        //fprintf(stderr, "Signalled in search node for consumed\n");
+    }
+    
+    //pthread_mutex_unlock(&consumption_mutex1); 
+    search_nodes_circ_buf.node[searched_nodes_circ_buf_end].u = u;
+    search_nodes_circ_buf.node[searched_nodes_circ_buf_end].state = READY;
+    board_copy( &search_nodes_circ_buf.node[searched_nodes_circ_buf_end].b2, &b2 );
+    search_nodes_circ_buf.node[searched_nodes_circ_buf_end].player_color = player_color;
+    search_nodes_circ_buf.node[searched_nodes_circ_buf_end].node_color = node_color;
+    search_nodes_circ_buf.node[searched_nodes_circ_buf_end].t = t;
+    memcpy ( &search_nodes_circ_buf.node[searched_nodes_circ_buf_end].amaf, &amaf, sizeof (amaf) );
+    search_nodes_circ_buf.node[searched_nodes_circ_buf_end].passes = passes;
+    search_nodes_circ_buf.node[searched_nodes_circ_buf_end].result = result;
+    memcpy( search_nodes_circ_buf.node[searched_nodes_circ_buf_end].descent, descent, sizeof (struct uct_descent) * DESCENT_DLEN );
+    search_nodes_circ_buf.node[searched_nodes_circ_buf_end].dlen = dlen;
+    search_nodes_circ_buf.node[searched_nodes_circ_buf_end].significant[0] = significant[0];
+    search_nodes_circ_buf.node[searched_nodes_circ_buf_end].significant[1] = significant[1];
+    search_nodes_circ_buf.node[searched_nodes_circ_buf_end].n = n;
+    
+    //if (!uct_halt)
+    //{
+#ifdef FILE_LOGGING    
+    total_search_time += time_now() - search_time;
+#endif
+        //Over-storing
+        while( ( ( searched_nodes_circ_buf_end + 1 ) == searched_nodes_circ_buf_start  ||
+             ( ( ( searched_nodes_circ_buf_end + 1 ) == MAX_CIRC_BUF_SIZE ) && ( searched_nodes_circ_buf_start == 0 ) ) ) &&
+             ( !uct_halt ) )
+        {
+            //fprintf(stderr, "Waiting in search node\n");
+                pthread_cond_wait ( &search_finish_cond, &pipeline_mutex );
+            //fprintf(stderr, "Signaled in search node\n");
+        }
+
+        searched_nodes_circ_buf_end++;
+
+        if ( searched_nodes_circ_buf_end == MAX_CIRC_BUF_SIZE )
+            searched_nodes_circ_buf_end = 0;
+
+        pthread_mutex_unlock(&pipeline_mutex);
+        pthread_cond_signal ( &simulate_finish_cond );
+    //}
+
+    //fprintf(stderr, "Complete Select stage. Circ_buf_end=%d, Circ_buf_start=%d\n", searched_nodes_circ_buf_end, searched_nodes_circ_buf_start);
+end:
+    board_done_noalloc(&b2);
+    return result;
+}
+
+int
+uct_select_mcts_nodes(struct uct *u, struct board *b, enum stone color, struct tree *t, struct time_info *ti)
+{
+        fprintf(stderr, "Start uct_select_mcts_nodes()\n");
+	int i;
+#ifdef FILE_LOGGING
+        search_time_file = fopen("search_time.txt", "a");
+#endif
+        
+	if (ti && ti->dim == TD_GAMES) {
+		for (i = 0; t->root->u.playouts <= ti->len.games && !uct_halt; i++)
+			uct_select_mcts_node(u, b, color, t);
+	} else {
+		for (i = 0; !uct_halt; i++)
+                {
+			uct_select_mcts_node(u, b, color, t);
+                }
+	}
+#ifdef FILE_LOGGING
+        fprintf(search_time_file, "Search Time: %f\n", total_search_time);
+        total_search_time = 0;
+        fclose(search_time_file);
+#endif
+        fprintf(stderr, "Ending uct_select_mcts_nodes()\n");
+	return 0;
+}
+
+int
+uct_simulate_mcts_playout(struct uct *u, struct board *b, enum stone player_color, struct tree *t)
+{    
+#ifdef FILE_LOGGING    
+    double simulate_time = time_now();
+#endif    
+    //Over-consuming
+    int my_node_index = 0;
+    pthread_mutex_lock(&pipeline_mutex);
+    while ( (searched_nodes_circ_buf_start == searched_nodes_circ_buf_end) && !uct_halt )
+    {
+            pthread_cond_wait ( &simulate_finish_cond, &pipeline_mutex );
+    }
+    
+    if (uct_halt)
+    {
+        pthread_mutex_unlock(&pipeline_mutex);
+        return 0;
+    }
+    
+    //Get stored search nodes
+    my_node_index = searched_nodes_circ_buf_start;
+    u = search_nodes_circ_buf.node[searched_nodes_circ_buf_start].u;
+    struct board b2;
+    board_copy ( &b2, &search_nodes_circ_buf.node[searched_nodes_circ_buf_start].b2 );
+    player_color = search_nodes_circ_buf.node[searched_nodes_circ_buf_start].player_color;
+    enum stone node_color = search_nodes_circ_buf.node[searched_nodes_circ_buf_start].node_color;
+    t = search_nodes_circ_buf.node[searched_nodes_circ_buf_start].t;
+    struct playout_amafmap amaf;
+    memcpy ( &amaf, &search_nodes_circ_buf.node[searched_nodes_circ_buf_start].amaf, sizeof (amaf) );
+    int passes = search_nodes_circ_buf.node[searched_nodes_circ_buf_start].passes;
+    int result = search_nodes_circ_buf.node[searched_nodes_circ_buf_start].result;
+    struct uct_descent descent[DESCENT_DLEN];
+    memcpy( descent, search_nodes_circ_buf.node[searched_nodes_circ_buf_start].descent, sizeof (struct uct_descent) * DESCENT_DLEN );
+    int dlen = search_nodes_circ_buf.node[searched_nodes_circ_buf_start].dlen;
+    struct tree_node *significant[2] = { NULL, NULL };
+    significant[0] = search_nodes_circ_buf.node[searched_nodes_circ_buf_start].significant[0];
+    significant[1] = search_nodes_circ_buf.node[searched_nodes_circ_buf_start].significant[1];
+    struct tree_node *n = search_nodes_circ_buf.node[searched_nodes_circ_buf_start].n; 
+
+    board_done_noalloc(&search_nodes_circ_buf.node[searched_nodes_circ_buf_start].b2);
+    searched_nodes_circ_buf_start++;
+
+    if ( searched_nodes_circ_buf_start == MAX_CIRC_BUF_SIZE )
+        searched_nodes_circ_buf_start = 0;    
+
+    pthread_mutex_unlock(&pipeline_mutex);
+    //fprintf(stderr, "Signalling Search Node stage\n");
+    pthread_cond_signal ( &search_finish_cond );    
+    //fprintf(stderr, "Begin Remaining Stage\n");
+    
+	/* debug */
+	static char spaces[] = "\0                                                      ";
+	/* /debug */
+
+        //Get Node to do remaining MCTS
+	amaf.game_baselen = amaf.gamelen;
+
+	if (t->use_extra_komi && u->dynkomi->persim) {
+		b2.komi += round(u->dynkomi->persim(u->dynkomi, &b2, t, n));
+	}
+
+	/* !!! !!! !!!
+	 * ALERT: The "result" number is extremely confusing. In some parts
+	 * of the code, it is from white's perspective, but here positive
+	 * number is black's win! Be VERY CAREFUL.
+	 * !!! !!! !!! */
+
+	if (passes >= 2) {
+		/* XXX: No dead groups support. */
+		floating_t score = board_official_score(&b2, NULL);
+		/* Result from black's perspective (no matter who
+		 * the player; black's perspective is always
+		 * what the tree stores. */
+		result = - (score * 2);
+
+		if (UDEBUGL(5))
+			fprintf(stderr, "[%d..%d] %s p-p scoring playout result %d (W %f)\n",
+				player_color, node_color, coord2sstr(node_coord(n), t->board), result, score);
+		if (UDEBUGL(6))
+			board_print(&b2, stderr);
+
+		board_ownermap_fill(&u->ownermap, &b2);
+
+	} else { // assert(tree_leaf_node(n));
+		/* In case of parallel tree search, the assertion might
+		 * not hold if two threads chew on the same node. */
+                //fprintf(stderr, "SIMULATING\n");
+		result = uct_leaf_node(u, &b2, player_color, &amaf, descent, &dlen, significant, t, n, node_color, spaces);
+                //fprintf(stderr, "SIMULATING COMPLETE\n");
+	}
+
+	if (u->policy->wants_amaf && u->playout_amaf_cutoff) {
+		unsigned int cutoff = amaf.game_baselen;
+		cutoff += (amaf.gamelen - amaf.game_baselen) * u->playout_amaf_cutoff / 100;
+		amaf.gamelen = cutoff;
+	}
+#ifdef FILE_LOGGING
+        total_simulate_time += time_now() - simulate_time;
+#endif
+        //if (!uct_halt)
+        //{
+            /* Consumption Complete */
+            //fprintf(stderr, "Complete Remaining stage. Begin circ buf logic\n")
+        //}
+        
+        search_nodes_circ_buf.node[my_node_index].state = CONSUMED;
+        pthread_cond_signal ( &consumption_cond1 ); 
+        //fprintf(stderr, "Search node %d consumed and signaled\n", my_node_index);
+        
+        /* Queue Simulate -> Update Node */
+        pthread_mutex_lock(&pipeline_mutex2);  
+        while ((simulated_nodes_circ_buf.node[simulated_nodes_circ_buf_end].state != CONSUMED) && !uct_halt)
+        {
+            //fprintf(stderr, "Simulate node waiting for consumption, buf_end=%d\n", simulated_nodes_circ_buf_end);
+                    pthread_cond_wait ( &consumption_cond2, &pipeline_mutex2 );  
+            
+            //fprintf(stderr, "Simulate node signaled for consumption\n");
+        }
+        
+        simulated_nodes_circ_buf.node[simulated_nodes_circ_buf_end].u = u;
+        simulated_nodes_circ_buf.node[simulated_nodes_circ_buf_end].state = READY;
+        board_copy( &simulated_nodes_circ_buf.node[simulated_nodes_circ_buf_end].b2, &b2 );
+        simulated_nodes_circ_buf.node[simulated_nodes_circ_buf_end].player_color = player_color;
+        simulated_nodes_circ_buf.node[simulated_nodes_circ_buf_end].node_color = node_color;
+        simulated_nodes_circ_buf.node[simulated_nodes_circ_buf_end].t = t;
+        memcpy ( &simulated_nodes_circ_buf.node[simulated_nodes_circ_buf_end].amaf, &amaf, sizeof (amaf) );
+        simulated_nodes_circ_buf.node[simulated_nodes_circ_buf_end].result = result;
+        memcpy( simulated_nodes_circ_buf.node[simulated_nodes_circ_buf_end].descent, descent, sizeof (struct uct_descent) * DESCENT_DLEN );
+        simulated_nodes_circ_buf.node[simulated_nodes_circ_buf_end].dlen = dlen;
+        simulated_nodes_circ_buf.node[simulated_nodes_circ_buf_end].significant[0] = significant[0];
+        simulated_nodes_circ_buf.node[simulated_nodes_circ_buf_end].significant[1] = significant[1];
+        simulated_nodes_circ_buf.node[simulated_nodes_circ_buf_end].n = n;
+
+        //if (!uct_halt)
+        //{
+            while( ( ( simulated_nodes_circ_buf_end + 1 ) == simulated_nodes_circ_buf_start  ||
+                 ( ( ( simulated_nodes_circ_buf_end + 1 ) == MAX_CIRC_BUF_SIZE ) && ( simulated_nodes_circ_buf_start == 0 ) ) ) &&
+                 ( !uct_halt ) )
+            {
+                    pthread_cond_wait ( &simulate_finish_cond2, &pipeline_mutex2 );
+                //fprintf(stderr, "Signaled in search node\n");
+            }
+
+            simulated_nodes_circ_buf_end++;
+
+            if ( simulated_nodes_circ_buf_end == MAX_CIRC_BUF_SIZE )
+                simulated_nodes_circ_buf_end = 0;
+
+            pthread_mutex_unlock(&pipeline_mutex2);
+            pthread_cond_signal ( &update_finish_cond );
+        //}
+        //fprintf(stderr, "Complete Simulate stage. Search_Circ_buf_start=%d, simulate_circ_buf_end=%d \n", searched_nodes_circ_buf_start, simulated_nodes_circ_buf_end);
+        
+        board_done_noalloc(&b2);
+	return result;
+}
+
+int
+uct_simulate_mcts_playouts(struct uct *u, struct board *b, enum stone color, struct tree *t, struct time_info *ti)
+{
+#ifdef FILE_LOGGING
+        simulate_time_file = fopen("simulate_time.txt", "a");
+#endif       
+	int i;
+        fprintf(stderr, "Start uct_simulate_mcts_playout()\n");
+	if (ti && ti->dim == TD_GAMES) {
+		for (i = 0; t->root->u.playouts <= ti->len.games && !uct_halt; i++)
+			uct_simulate_mcts_playout(u, b, color, t);
+	} else {
+		for (i = 0; !uct_halt; i++)
+                {
+			uct_simulate_mcts_playout(u, b, color, t);
+                }
+	}
+#ifdef FILE_LOGGING        
+        fprintf(simulate_time_file, "Simulate Time: %f\n", total_simulate_time);
+        total_simulate_time = 0;
+        fclose(simulate_time_file);
+#endif        
+        fprintf(stderr, "Ending uct_simulate_mcts_playout()\n");
+	return i;
+}
+
+int
+uct_update_mcts_playout(struct uct *u, struct board *b, enum stone player_color, struct tree *t)
+{
+    int my_node_index = 0;
+    pthread_mutex_lock(&pipeline_mutex2);
+    while ( ( simulated_nodes_circ_buf_start == simulated_nodes_circ_buf_end ) && !uct_halt )
+    {
+            pthread_cond_wait ( &update_finish_cond, &pipeline_mutex2 );
+    }
+#ifdef FILE_LOGGING    
+    double update_time = time_now();
+#endif
+    
+    //Get stored search nodes
+    if (uct_halt)
+    {
+        pthread_mutex_unlock(&pipeline_mutex2);
+        return 0;
+    }
+    
+    my_node_index = simulated_nodes_circ_buf_start;
+    u = simulated_nodes_circ_buf.node[simulated_nodes_circ_buf_start].u;
+    struct board b2;
+    board_copy ( &b2, &simulated_nodes_circ_buf.node[simulated_nodes_circ_buf_start].b2 );
+    player_color = simulated_nodes_circ_buf.node[simulated_nodes_circ_buf_start].player_color;
+    enum stone node_color = simulated_nodes_circ_buf.node[simulated_nodes_circ_buf_start].node_color;
+    t = simulated_nodes_circ_buf.node[simulated_nodes_circ_buf_start].t;
+    struct playout_amafmap amaf;
+    memcpy ( &amaf, &simulated_nodes_circ_buf.node[simulated_nodes_circ_buf_start].amaf, sizeof (amaf) );
+    int result = simulated_nodes_circ_buf.node[simulated_nodes_circ_buf_start].result;
+    struct uct_descent descent[DESCENT_DLEN];
+    memcpy( descent, simulated_nodes_circ_buf.node[simulated_nodes_circ_buf_start].descent, sizeof (struct uct_descent) * DESCENT_DLEN );
+    int dlen = simulated_nodes_circ_buf.node[simulated_nodes_circ_buf_start].dlen;
+    struct tree_node *significant[2] = { NULL, NULL };
+    significant[0] = simulated_nodes_circ_buf.node[simulated_nodes_circ_buf_start].significant[0];
+    significant[1] = simulated_nodes_circ_buf.node[simulated_nodes_circ_buf_start].significant[1];
+    struct tree_node *n = simulated_nodes_circ_buf.node[simulated_nodes_circ_buf_start].n; 
+
+    board_done_noalloc(&simulated_nodes_circ_buf.node[simulated_nodes_circ_buf_start].b2);
+    simulated_nodes_circ_buf_start++;
+
+    if ( simulated_nodes_circ_buf_start == MAX_CIRC_BUF_SIZE )
+        simulated_nodes_circ_buf_start = 0;    
+
+    pthread_mutex_unlock(&pipeline_mutex2);
+    //fprintf(stderr, "Signalling Search Node stage\n");
+    pthread_cond_signal ( &simulate_finish_cond2 );   
+            
+    //fprintf(stderr, "Start Update Stage\n");
+	/* Record the result. */
+
+	assert(n == t->root || n->parent);
+	floating_t rval = scale_value(u, b, node_color, significant, result);
+	u->policy->update(u->policy, t, n, node_color, player_color, &amaf, &b2, rval);
+
+	stats_add_result(&t->avg_score, result / 2, 1);
+	if (t->use_extra_komi) {
+		stats_add_result(&u->dynkomi->score, result / 2, 1);
+		stats_add_result(&u->dynkomi->value, rval, 1);
+	}
+
+	if (u->local_tree && n->parent && !is_pass(node_coord(n)) && dlen > 0) {
+		/* Get the local sequences and record them in ltree. */
+		/* We will look for sequence starts in our descent
+		 * history, then run record_local_sequence() for each
+		 * found sequence start; record_local_sequence() may
+		 * pick longer sequences from descent history then,
+		 * which is expected as it will create new lnodes. */
+		enum stone seq_color = player_color;
+		/* First move always starts a sequence. */
+		record_local_sequence(u, t, &b2, descent, dlen, 1, seq_color);
+		seq_color = stone_other(seq_color);
+		for (int dseqi = 2; dseqi < dlen; dseqi++, seq_color = stone_other(seq_color)) {
+			if (u->local_tree_allseq) {
+				/* We are configured to record all subsequences. */
+				record_local_sequence(u, t, &b2, descent, dlen, dseqi, seq_color);
+				continue;
+			}
+			if (descent[dseqi].node->d >= u->tenuki_d) {
+				/* Tenuki! Record the fresh sequence. */
+				record_local_sequence(u, t, &b2, descent, dlen, dseqi, seq_color);
+				continue;
+			}
+			if (descent[dseqi].lnode && !descent[dseqi].lnode) {
+				/* Record result for in-descent picked sequence. */
+				record_local_sequence(u, t, &b2, descent, dlen, dseqi, seq_color);
+				continue;
+			}
+		}
+	}
+        
+	/* We need to undo the virtual loss we added during descend. */
+	if (u->virtual_loss) {
+		for (; n->parent; n = n->parent) {
+			__sync_fetch_and_sub(&n->descents, u->virtual_loss);
+		}
+	}
+#ifdef FILE_LOGGING        
+        total_update_time += time_now() - update_time;
+#endif
+        //if (!uct_halt)
+        //{
+            //fprintf(stderr, "Complete Remaining stage. Begin circ buf logic\n")
+        //}
+        //fprintf(stderr, "Complete Update stage. Circ_buf_start=%d\n", simulated_nodes_circ_buf_start);
+        
+        simulated_nodes_circ_buf.node[my_node_index].state = CONSUMED;
+        pthread_cond_signal ( &consumption_cond2 );  
+        //fprintf(stderr, "Update Thread consumed and signaled\n");
+        
+        board_done_noalloc(&b2);
+	return result;
+}
+
+int
+uct_update_mcts_playouts(struct uct *u, struct board *b, enum stone color, struct tree *t, struct time_info *ti)
+{  
+#ifdef FILE_LOGGING    
+        update_time_file = fopen("update_time.txt", "a");
+#endif        
+	int i;
+        fprintf(stderr, "Start uct_update_mcts_playouts()\n");
+	if (ti && ti->dim == TD_GAMES) {
+		for (i = 0; t->root->u.playouts <= ti->len.games && !uct_halt; i++)
+			uct_update_mcts_playout(u, b, color, t);
+	} else {
+		for (i = 0; !uct_halt; i++)
+                {
+			uct_update_mcts_playout(u, b, color, t);
+                }
+	}
+#ifdef FILE_LOGGING                
+        fprintf(update_time_file, "Update Time: %f\n", total_update_time);
+        total_update_time = 0;
+        fclose(update_time_file);
+#endif        
+        fprintf(stderr, "Ending uct_update_mcts_playouts()\n");
+	return 0;
+}
+

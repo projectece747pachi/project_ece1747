@@ -433,6 +433,10 @@ time_stop_conditions(struct time_info *ti, struct board *b, int fuseki_end, int 
 			stop->desired.time = stop->worst.time;
 	}
 
+        fprintf(stderr, "Not accounting for lag, running on local\n");
+        ti->len.t.timer_start = time_now();
+        stop->desired.time = 9.5;
+        stop->worst.time = 10;        
 	if (DEBUGL(1))
 		fprintf(stderr, "desired %0.2f, worst %0.2f, clock [%d] %0.2f + %0.2f/%d*%d, lag %0.2f\n",
 			stop->desired.time, stop->worst.time,
@@ -443,9 +447,5 @@ time_stop_conditions(struct time_info *ti, struct board *b, int fuseki_end, int 
 	/* Account for lag. */
 	//lag_adjust(&stop->desired.time, net_lag);
 	//lag_adjust(&stop->worst.time, net_lag);
-        fprintf(stderr, "Not accounting for lag, running on local\n");
-        ti->len.t.timer_start = time_now();
-        stop->desired.time = 8;
-        stop->worst.time = 10;
         //fprintf(stderr, "Lag adjusted worst %0.2f\n", stop->worst.time);
 }

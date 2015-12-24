@@ -17,6 +17,7 @@
 #include "uct/uct.h"
 #include "version.h"
 #include "timeinfo.h"
+#include "stats_logger.h"
 
 #define NO_REPLY (-2)
 
@@ -314,6 +315,13 @@ gtp_parse(struct board *board, struct engine *engine, struct time_info *ti, char
 			fprintf(stderr, "Attempted to generate an illegal move: [%s, %s]\n", coord2sstr(m.coord, board), stone2str(m.color));
 			abort();
 		}
+                
+                if ( is_resign(*c) )
+                {
+                    fprintf(stderr, "Last Move was Resign\n");
+                    wasLastPlayResign = true;
+                }
+                
 		char *str = coord2str(*c, board);
 		if (DEBUGL(4))
 			fprintf(stderr, "playing move %s\n", str);
